@@ -24,7 +24,7 @@ class Field
     /**
      * @var Collection<int, Payload>
      */
-    #[ORM\OneToMany(targetEntity: Payload::class, mappedBy: 'fields')]
+    #[ORM\ManyToMany(targetEntity: Payload::class, mappedBy: 'fields')]
     private Collection $payloads;
 
     public function __construct()
@@ -73,7 +73,7 @@ class Field
     {
         if (!$this->payloads->contains($payload)) {
             $this->payloads->add($payload);
-            $payload->setFields($this);
+            $payload->addField($this);
         }
 
         return $this;
@@ -82,10 +82,7 @@ class Field
     public function removePayload(Payload $payload): static
     {
         if ($this->payloads->removeElement($payload)) {
-            // set the owning side to null (unless already changed)
-            if ($payload->getFields() === $this) {
-                $payload->setFields(null);
-            }
+            $payload->removeField($this);
         }
 
         return $this;

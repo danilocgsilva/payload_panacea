@@ -10,6 +10,11 @@ class PayloadAsArray
 
     public function getArray(): array
     {
-        return [];
+        $returnedArray = [];
+        foreach ($this->payload->getFields() as $field) {
+            $returnedArray[$field->getName()] = $field->getValue();
+        }
+        
+        return $returnedArray;
     }
 }

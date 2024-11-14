@@ -3,6 +3,8 @@
 namespace Danilocgsilva\PayloadPanacea\Entity;
 
 use Danilocgsilva\PayloadPanacea\Repository\PayloadRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PayloadRepository::class)]
@@ -16,8 +18,16 @@ class Payload
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\ManyToOne(inversedBy: 'payloads')]
-    private ?Field $fields = null;
+    /**
+     * @var Collection<int, Field>
+     */
+    #[ORM\ManyToMany(targetEntity: Field::class, inversedBy: 'payloads')]
+    private Collection $fields;
+
+    public function __construct()
+    {
+        $this->fields = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -36,14 +46,26 @@ class Payload
         return $this;
     }
 
-    public function getFields(): ?Field
+    /**
+     * @return Collection<int, Field>
+     */
+    public function getFields(): Collection
     {
         return $this->fields;
     }
 
-    public function setFields(?Field $fields): static
+    public function addField(Field $field): static
     {
-        $this->fields = $fields;
+        if (!$this->fields->contains($field)) {
+            $this->fields->add($field);
+        }
+
+        return $this;
+    }
+
+    public function removeField(Field $field): static
+    {
+        $this->fields->removeElement($field);
 
         return $this;
     }
