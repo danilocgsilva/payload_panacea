@@ -9,11 +9,6 @@ use PHPUnit\Framework\TestCase;
 
 class PayloadAsArrayTest extends TestCase
 {
-    public function testSomething(): void
-    {
-        $this->assertTrue(true);
-    }
-
     public function testArrayConvertion(): void
     {
         $payload = new Payload();
